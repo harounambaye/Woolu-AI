@@ -11,7 +11,7 @@ import { validateAnalysis, validateLetter, mergeRuleIndicators } from "./validat
 import { mockAnalysis, mockLetter } from "./mock.js";
 
 const PORT = process.env.PORT || 3001;
-const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 const DEMO_MODE = !process.env.GROQ_API_KEY;
 const groq = DEMO_MODE ? null : new Groq({ apiKey: process.env.GROQ_API_KEY });
 

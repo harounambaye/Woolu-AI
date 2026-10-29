@@ -20,7 +20,7 @@ Woolu AI ne demande jamais de code PIN, de mot de passe ni d'OTP, et ne conclut 
 | **Application principale** (`mobile/`) | Flutter 3.29 : web responsive, Android et iOS. Icônes Phosphor, police Plus Jakarta Sans, animations flutter_animate, PDF avec `pdf`, OCR local (Tesseract.js sur le web, ML Kit sur mobile) |
 | Client web léger (`client/`) | React 18, Vite 6, Tailwind CSS 4, jsPDF |
 | Backend | Node.js, Express 4, `groq-sdk` |
-| IA | API Groq, modèle `llama-3.3-70b-versatile` (configurable), mode JSON |
+| IA | API Groq, modèle `openai/gpt-oss-120b` (configurable), mode JSON |
 | Stockage | Aucun : l'historique reste en mémoire dans le navigateur, le temps de la session |
 
 Architecture : `React → /api (proxy Vite) → Express → règles déterministes + validation → Groq → validation du schéma → React`
@@ -44,7 +44,7 @@ cp server/.env.example server/.env    # sous Windows : copy server\.env.example 
 | Variable | Rôle | Valeur par défaut |
 |---|---|---|
 | `GROQ_API_KEY` | Clé Groq (https://console.groq.com/keys). **Si elle est vide, le serveur passe en mode démo.** | vide |
-| `GROQ_MODEL` | Modèle Groq utilisé | `llama-3.3-70b-versatile` |
+| `GROQ_MODEL` | Modèle Groq utilisé (liste : console.groq.com) | `openai/gpt-oss-120b` |
 | `PORT` | Port de l'API | `3001` |
 | `CLIENT_ORIGIN` | Seule origine autorisée par CORS | `http://localhost:5173` |
 
