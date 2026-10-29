@@ -43,9 +43,10 @@ export function validateLetter(raw) {
 // Règles déterministes appliquées avant le modèle : elles ne dépendent pas de l'IA.
 const RULES = [
   { re: /\b(codes?|pin|otp|mot de passe)\b/i, label: "Le message mentionne un code confidentiel (PIN, OTP ou mot de passe)." },
-  { re: /\b(urgent|imm[ée]diatement|vite|dans les \d+ ?(min|minutes|heures?)|sinon)\b/i, label: "Le message pousse à agir dans l'urgence." },
+  { re: /\b(urgent|imm[ée]diatement|vite|sinon|(sous|dans|valable|expire\w*)\s+(les\s+)?\d+\s*(min|minutes|heures?|h)\b)/i, label: "Le message pousse à agir dans l'urgence." },
   { re: /\b(bloqu[ée]|suspendu|d[ée]sactiv[ée])\b/i, label: "Le message menace de bloquer ou de suspendre le compte." },
-  { re: /\b(gagn[ée]|gagnant|bonus|cadeau|lot)\b/i, label: "Le message promet un gain ou un cadeau." },
+  { re: /\b(gagn\w*|bonus|cadeau|lot|tir[ée] au sort|f[ée]licitations)\b/i, label: "Le message promet un gain ou un cadeau." },
+  { re: /\bfrais de (dossier|d[ée]blocage|retrait)\b/i, label: "Le message réclame des frais avant de verser un gain ou un remboursement." },
 ];
 
 export function ruleIndicators(text) {
