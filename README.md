@@ -17,7 +17,8 @@ Woolu AI ne demande jamais de code PIN, de mot de passe ni d'OTP, et ne conclut 
 
 | Couche | Technologies |
 |---|---|
-| Frontend | React 18, Vite 6, Tailwind CSS 4, jsPDF (export côté client) |
+| **Application principale** (`mobile/`) | Flutter 3.29 : web responsive, Android et iOS. Icônes Phosphor, police Plus Jakarta Sans, animations flutter_animate, PDF avec `pdf`, OCR local (Tesseract.js sur le web, ML Kit sur mobile) |
+| Client web léger (`client/`) | React 18, Vite 6, Tailwind CSS 4, jsPDF |
 | Backend | Node.js, Express 4, `groq-sdk` |
 | IA | API Groq, modèle `llama-3.3-70b-versatile` (configurable), mode JSON |
 | Stockage | Aucun : l'historique reste en mémoire dans le navigateur, le temps de la session |
@@ -53,9 +54,22 @@ La clé reste uniquement dans `server/.env`, qui est exclu de Git par `.gitignor
 
 ## Lancement
 
+### Application Flutter (recommandée pour la démo)
+
 ```bash
-npm run dev
+npm run build:web   # compile l'app Flutter web (Flutter SDK requis), à refaire après chaque modification
+npm run dev         # lance l'API et le client React
 ```
+
+Ouvrez **http://localhost:3001**. Express y sert l'application Flutter et l'API à la même adresse.
+- Sur téléphone, l'app occupe tout l'écran.
+- Sur ordinateur, elle s'affiche dans une colonne centrée, avec un panneau de présentation à côté.
+- Pour tester depuis un téléphone sur le même Wi-Fi, ouvrez `http://IP_DU_PC:3001`.
+
+Pour développer avec rechargement à chaud : `cd mobile && flutter run -d chrome --web-port 5174`.
+Pour Android : `cd mobile && flutter run` (voir [mobile/README.md](mobile/README.md)).
+
+### Client React
 
 - Client : http://localhost:5173
 - API : http://localhost:3001 (`GET /api/health` indique le mode actif : `demo` ou `groq`)
@@ -71,11 +85,13 @@ Erreurs : 400 pour une entrée vide, trop longue ou un JSON invalide, 413 pour u
 
 ## Déroulé de la démo (5 étapes, environ 2 minutes)
 
-1. **Accueil** : présenter « Comprendre. Sécuriser. Résoudre. », puis cliquer sur *Analyser un incident*.
-2. **Analyse** : cliquer sur *Charger un exemple → Demande de code*, puis sur *Analyser*. Montrer le badge **Risque élevé**, les indices (dont les *règles automatiques*, indépendantes de l'IA), les actions immédiates et l'encadré **Limites de l'analyse**.
-3. **Deuxième cas** : faire *Nouvelle analyse → Transfert non reçu → Analyser*. Le risque est modéré et l'analyse signale les informations manquantes.
-4. **Résolution** : cliquer sur *Résoudre l'incident*, cocher les premières étapes, puis remplir la date (27/10), l'heure (14h10), le montant (75 000), la référence (TX-2610-48213) et une ligne de chronologie. Cliquer sur *Générer le dossier*.
-5. **Dossier** : montrer la synthèse, les justificatifs et la lettre, qu'on peut modifier. Cliquer sur **Télécharger le PDF**, puis ouvrir *Session* pour retrouver les analyses de la session.
+Le déroulé ci-dessous utilise l'application Flutter, sur http://localhost:3001.
+
+1. **Accueil** : présenter « Comprendre. Sécuriser. Résoudre. » et les trois façons d'entrer un incident (décrire, coller un SMS, importer une capture).
+2. **Analyse** : toucher le scénario *SMS demandant un code*, puis *Analyser*. Montrer l'en-tête rouge **Risque élevé**, les indices (dont les *règles de sécurité*, indépendantes de l'IA), les actions immédiates et l'encadré **Limites de l'analyse**.
+3. **Capture** : dans *Importer une capture*, choisir une capture de confirmation. Le texte est lu dans le navigateur, puis analysé.
+4. **Résolution** : toucher *Résoudre l'incident*, cocher les premières étapes (la barre de progression avance), puis renseigner la date, l'heure, le montant et la référence. Toucher *Générer le dossier*.
+5. **Dossier** : montrer la synthèse, les justificatifs et la lettre, qu'on peut modifier. Toucher **Télécharger le PDF**, puis ouvrir *Mes incidents* pour retrouver les analyses de la session.
 
 Le troisième scénario, *Paiement contesté*, est prêt pour les questions du jury.
 
@@ -91,7 +107,7 @@ Le troisième scénario, *Paiement contesté*, est prêt pour les questions du j
 
 ## Limites du MVP
 
-- **Pas d'OCR** : l'utilisateur colle le texte, l'import de capture d'écran est reporté.
+- **OCR local imparfait** : la lecture des captures (Tesseract.js sur le web, ML Kit sur mobile) peut mal lire une image floue. L'utilisateur relit et corrige le texte avant l'analyse. Sur le web, Tesseract est téléchargé depuis un CDN au premier usage, il faut donc une connexion.
 - **Aucune vérification réelle** : Woolu AI ne consulte pas les systèmes des opérateurs. Le niveau de risque est une estimation, pas une preuve.
 - **Mode démo** : les réponses sont figées pour 3 scénarios. Tout autre texte reçoit un résultat générique, clairement signalé.
 - **Historique éphémère** : il disparaît au rechargement de la page, et il n'y a pas de comptes.
