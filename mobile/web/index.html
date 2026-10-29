@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Woolu AI analyse vos incidents de mobile money, vous guide pas à pas et prépare votre dossier de réclamation.">
+  <meta name="theme-color" content="#0B7A63">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Woolu AI">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="manifest" href="manifest.json">
+  <title>Woolu AI · Comprendre. Sécuriser. Résoudre.</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #F5F7F6; }
+    #splash {
+      position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0E8A6F, #064538); color: #fff;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; transition: opacity .35s ease; z-index: 10;
+    }
+    #splash.hide { opacity: 0; pointer-events: none; }
+    #splash .logo {
+      width: 84px; height: 84px; border-radius: 26px; background: #fff; display: grid; place-items: center;
+      box-shadow: 0 18px 40px rgba(0,0,0,.25); animation: pulse 1.4s ease-in-out infinite;
+    }
+    #splash .name { margin-top: 22px; font-size: 26px; font-weight: 800; letter-spacing: -.3px; }
+    #splash .name span { color: #F2A93B; }
+    #splash .tag { margin-top: 6px; font-size: 14px; opacity: .8; }
+    #splash .bar { margin-top: 28px; width: 140px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.2); overflow: hidden; }
+    #splash .bar::after { content: ""; display: block; width: 40%; height: 100%; background: #F2A93B; border-radius: 4px; animation: load 1.1s ease-in-out infinite; }
+    @keyframes pulse { 50% { transform: scale(1.06); } }
+    @keyframes load { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <div class="logo">
+      <img src="icons/logo-mark.png" width="48" height="48" alt="">
+    </div>
+    <div class="name">Woolu <span>AI</span></div>
+    <div class="tag">Comprendre. Sécuriser. Résoudre.</div>
+    <div class="bar"></div>
+  </div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var s = document.getElementById('splash');
+      s.classList.add('hide');
+      setTimeout(function () { s.remove(); }, 400);
+    });
+
+    // Lecture du texte d'une capture dans le navigateur : l'image ne quitte pas l'appareil.
+    var ocrScript = null;
+    function loadTesseract() {
+      if (window.Tesseract) return Promise.resolve();
+      if (!ocrScript) {
+        ocrScript = new Promise(function (resolve, reject) {
+          var s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+          s.onload = resolve;
+          s.onerror = function () { ocrScript = null; reject(new Error('ocr-load')); };
+          document.head.appendChild(s);
+        });
+      }
+      return ocrScript;
+    }
+    window.wooluOcr = function (bytes) {
+      return loadTesseract().then(function () {
+        return Tesseract.recognize(new Blob([bytes]), 'fra');
+      }).then(function (r) { return r.data.text || ''; });
+    };
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

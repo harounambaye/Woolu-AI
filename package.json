@@ -1,0 +1,14 @@
+{
+  "name": "woolu-ai",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Woolu AI — Comprendre. Sécuriser. Résoudre.",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently -n server,client -c blue,green \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
